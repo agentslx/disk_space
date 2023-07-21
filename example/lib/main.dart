@@ -27,26 +27,22 @@ class _MyAppState extends State<MyApp> {
   Future<void> initDiskSpace() async {
     double diskSpace = 0;
 
-    diskSpace = await DiskSpace.getFreeDiskSpace;
+    diskSpace = await DiskSpace.getFreeDiskSpace ?? 0;
 
-    List<Directory> directories;
+    List<Directory> directories = [];
     Map<Directory, double> directorySpace = {};
 
     if (Platform.isIOS) {
       directories = [await getApplicationDocumentsDirectory()];
     } else if (Platform.isAndroid) {
-      directories =
-          await getExternalStorageDirectories(type: StorageDirectory.movies)
-              .then(
+      directories = await getExternalStorageDirectories(type: StorageDirectory.movies).then(
         (list) async => list ?? [await getApplicationDocumentsDirectory()],
       );
-    } else {
-      return [];
     }
 
     for (var directory in directories) {
       var space = await DiskSpace.getFreeDiskSpaceForPath(directory.path);
-      directorySpace.addEntries([MapEntry(directory, space)]);
+      directorySpace.addEntries([MapEntry(directory, space??0)]);
     }
 
     if (!mounted) return;
