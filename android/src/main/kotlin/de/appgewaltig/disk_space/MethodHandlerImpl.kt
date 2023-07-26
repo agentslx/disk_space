@@ -47,4 +47,15 @@ class MethodHandlerImpl : MethodChannel.MethodCallHandler {
             stat.blockSize.toLong() * stat.blockCount.toLong()
         return (bytesAvailable / (1024f * 1024f)).toDouble()
     }
+
+    private fun getTotalInternalDiskSpace(): Double {
+        val stat = StatFs(Environment.getStorageDirectory().path)
+
+        val bytesAvailable: Long
+        bytesAvailable = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2)
+            stat.blockSizeLong * stat.blockCountLong
+        else
+            stat.blockSize.toLong() * stat.blockCount.toLong()
+        return (bytesAvailable / (1024f * 1024f)).toDouble()
+    }
 }
